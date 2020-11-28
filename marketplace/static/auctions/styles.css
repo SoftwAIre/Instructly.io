@@ -1,0 +1,17 @@
+body {
+    padding: 10px;
+}
+
+.card > a {
+    text-decoration: none;
+    color: black;
+}
+
+.card-img {
+    height: 150px;
+    object-fit: contain;
+}
+
+.tutor-div {
+    color:red;
+}

@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+  <h2>Tutors</h2>
+
+  {% for tutor in tutors %}
+    <div class="card mb-2">
+      <a href="{% url 'profile' tutor.id %}">
+
+        <div class="row no-gutters">
+          <div class="card-body">
+            {% if tutor.image_url %}
+              <div class="col-4">
+                <img src="{{ tutor.image_url }}" class="card-img" alt="{{ listing.title }}">
+              </div>
+              <div class="col-md-8">
+            {% else %}
+              <div class="col-md-12">
+            {% endif %}
+                <h5 class="card-title">{{ tutor }}</h5>
+                categories: {{ specialtylist }}
+                {% for specialty in specialtylist %}
+                  {{ specialty }}
+                {% empty %}
+                  Generalist
+                {% endfor %}
+                <p class="card-text">{{ tutor.tutor_profile }}</p>
+              </div>
+          </div>
+        </div>
+
+      </a>
+    </div>
+  {% empty %}
+    No active listings.
+  {% endfor %}
+
+{% endblock %}
