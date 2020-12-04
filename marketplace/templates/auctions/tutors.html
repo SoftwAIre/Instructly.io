@@ -4,36 +4,42 @@
 
   <h2>Tutors</h2>
 
-  {% for tutor in tutors %}
-    <div class="card mb-2">
-      <a href="{% url 'profile' tutor.id %}">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    {% for tutor in tutors %}
+  
+      <div class="col mb-3" >
+        <div class="card">
+          <a href="{% url 'profile' tutor.id %}">
+            <div class="card-header">{{ tutor }}</div>
 
-        <div class="row no-gutters">
-          <div class="card-body">
-            {% if tutor.image_url %}
-              <div class="col-4">
-                <img src="{{ tutor.image_url }}" class="card-img" alt="{{ listing.title }}">
+            <div class="row no-gutters">
+              <div class="card-body flex-container">
+                {% if tutor.image_url %}
+                <div class="col-md-4">
+                    <h5 class="card-title">{{ tutor }}</h5>
+                    <img src="{{ tutor.image_url }}" class="card-img" alt="{{ tutor }}">
+                  </div>
+                  <div class="col-md-8">
+                    {% else %}
+                    <div class="col-md-12">
+                      <h5 class="card-title">{{ tutor }}</h5>
+                {% endif %}
+                    <p class="card-text">{{ tutor.tutor_profile }}</p>
+                  </div>
               </div>
-              <div class="col-md-8">
-            {% else %}
-              <div class="col-md-12">
-            {% endif %}
-                <h5 class="card-title">{{ tutor }}</h5>
-                categories: {{ specialtylist }}
-                {% for specialty in specialtylist %}
-                  {{ specialty }}
-                {% empty %}
-                  Generalist
-                {% endfor %}
-                <p class="card-text">{{ tutor.tutor_profile }}</p>
-              </div>
-          </div>
+            </div>
+
+            <div class="card-footer">
+              <small class="text-muted">Specialties: {{ tutor.specialtylist.all|join:", " }}</small>
+            </div>
+
+          </a>
         </div>
-
-      </a>
-    </div>
-  {% empty %}
-    No active listings.
-  {% endfor %}
+      </div>
+    {% empty %}
+      No active tutors.
+    {% endfor %}
+  </div>
+  
 
 {% endblock %}

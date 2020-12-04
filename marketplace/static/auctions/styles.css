@@ -1,17 +1,60 @@
-body {
-    padding: 10px;
-}
-
 .card > a {
     text-decoration: none;
     color: black;
 }
 
 .card-img {
-    height: 150px;
+    /* height: 150px; */
     object-fit: contain;
+    border-radius: 50%;
+    max-width: 50px;
 }
 
 .tutor-div {
     color:red;
+}
+
+.flex-container {
+    display: flex
+}
+
+.container {
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 0;
+}
+
+.profile {
+    padding: 2px
+}
+
+.username-text {
+    padding: 8px 16px;
+}
+
+
+#profile-nav-img {
+    max-height: 25px;
+    max-width: 25px;
+    border-radius: 50%;
+}
+
+#profile-img {
+    max-height: 75px;
+    max-width: 75px;
+    border-radius: 50%;
+}
+
+
+.profile-text {
+    color: rgba(0,0,0,.5);
+}
+
+.navbar{
+    background-color: #e3f2fd;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.dropdown-toggle::after {
+    color: rgba(0,0,0,.5);
 }

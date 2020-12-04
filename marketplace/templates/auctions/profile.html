@@ -1,0 +1,131 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="container">
+    
+    <div class="title-view">
+      <h3>{{ title }}</h3>
+      <img id="profile-img" src="{{ user.image_url }}" alt="https://www.civhc.org/wp-content/uploads/2018/10/question-mark-768x768.png">
+    </div>
+
+    <!-- tagline here -->
+    <div id="tagline-view">
+      <div id="tagline-content">{{ profile_user.tagline }}</div>
+      {% if is_me %}
+        <button class="edit-tagline" data-tagline="{{ profile_user.id }}">Edit Tagline</button>
+      {% endif %}
+    </div>
+
+    <!-- edit tagline view -->
+    {% if is_me %}
+      <div id="edit-tagline-view">
+        <form id="edit-tagline-form">
+          {% csrf_token %}
+          <textarea
+              class="form-control edit-tagline-field"
+              >{{ profile_user.tagline }}</textarea>
+          <input type='submit'>
+        </form>
+      </div>
+    {% endif %}
+
+    {% if credentials %}
+        <p>Here are some of my credentials: <a href="{{ credentials }}">credentials</a></p>
+    {% endif %}
+  </div>
+
+  <br>
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Sessions</a>
+    </li>
+  </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">1</div>
+      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div id="profile-view">
+          <p id="profile-content">{{ profile }}</p>
+          {% if is_me %}
+            <button class="edit-profile" data-profile="{{ profile_user.id }}">Edit Profile</button> 
+          {% endif %}
+        </div>
+
+        <!-- edit profile view -->
+        {% if is_me %}
+          <div id="edit-profile-view">
+            <form id="edit-profile-form">
+              {% csrf_token %}
+              <textarea
+                  class="form-control edit-profile-field"
+                  >{{ profile }}</textarea>
+              <input type='submit'>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+        <h3>Listings {{ user }} won</h3>
+
+        <div class="row row-cols-1 row-cols-md-1 row-cols-lg-2">
+          {% for listing in listings %}
+              <div class="col mb-3">
+                  <div class="card border-success">
+                      <a href="{% url 'listing' listing.id %}">
+                          <div class="card-header row no-gutters">
+                              <div class="col-auto mr-auto">
+                                  {% if listing.category %}
+                                      {{ listing.category }}: 
+                                  {% endif %}
+                                  {{ listing.title }}
+                              </div>
+
+                              <div class="col-auto">
+                                  Due: {{ listing.due_date }}
+                              </div>
+                          </div>
+                          <div class="row no-gutters">
+                              <div class="card-body flex-container">
+                                  {% if listing.image_url %}
+                                      <div class="col-md-4">
+                                          <img src="{{ listing.image_url }}" class="card-img" alt="{{ listing.title }}">
+                                      </div>
+                                      <div class="col-md-8">
+                                  {% else %}
+                                      <div class="col-md-12">
+                                  {% endif %}
+                                          <p class="card-text">{{ listing.goal }}</p>
+                                      </div>
+                              </div>
+                          </div>
+                          <div class="card-footer">
+                              <small class="text-muted row no-gutters">
+                                  <div class="col-auto mr-auto">
+                                      User: {{ listing.seller }}
+                                  </div>
+                                  <div class="col-auto">
+                                      Starting Bid: ${{ listing.starting_bid }}
+                                  </div>
+                              </small>
+                          </div>
+                      </a>
+                  </div>
+              </div>
+          {% empty %}
+              No listings won.
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+
+      
+
+{% endblock %}

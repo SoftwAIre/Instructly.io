@@ -8,9 +8,15 @@
         </div>
     {% endif %}
 
-    <h2>
-        Listing: {{ listing.title }}
-    </h2>
+    <div class="row">
+        <div class="col-auto mr-auto">
+            <h2>{{ listing.title }}, due: {{ listing.due_date }}</h2>
+        </div>
+        <div class="col-auto">
+            <h3>${{ listing.starting_bid }}/h</h3>
+        </div>
+    </div>
+
     {% if on_watchlist %}
         <div>
             <span class="badge badge-secondary">Watchlist</span>
@@ -20,50 +26,13 @@
     {% if listing.image_url %}
         <img src="{{ listing.image_url }}" alt="{{ listing.title }}">
     {% endif %}
-
-    <p>
-        {{ listing.description }}
-    </p>
-
-    <h3>${{ listing.price }}</h3>
-    {% if listing.active %}
-        <small>{{ listing.bids.count }} bid(s) so far.</small>
-        {% if listing.winner == user %}
-            <small>Your bid is the current bid.</small>
-        {% endif %}
-    {% else %}
-        <small>Auction over after {{ listing.bids.count }} bid(s).</small>
-        {% if listing.winner == user %}
-            <small>You have won this auction!</small>
-        {% endif %}
-    {% endif %}
-
-    {% if listing.active and user.is_authenticated %}
-        {% if user == listing.seller %}
-            <form action="{% url 'close' listing.id %}" method="post">
-                {% csrf_token %}
-                <input class="btn btn-primary" type="submit" value="Close Auction">
-            </form>
-        {% else %}
-            <form action="{% url 'bid' listing.id %}" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input class="form-control" type="number" placeholder="Bid" name="bid">
-                </div>
-                <input class="btn btn-primary" type="submit" value="Place Bid">
-            </form>
-        {% endif %}
-    {% endif %}
     
-    <br/>
+    <br>
 
-    <h4>Details</h4>
-    <ul>
-        <li>Listed by: <a href="{% url 'profile' listing.seller.id %}">{{ listing.seller.username }}</a></li>
-        <li>Category: {{ listing.category|default:"No Category Listed" }}</li>
-        <li>Created: {{ listing.creation_time }}</li>
-    </ul>
+    <h5>{{ listing.goal }}</h5>
 
+    <p>{{ listing.description }}</p>
+    
     {% if user.is_authenticated %}
         {% if on_watchlist %}
             <form action="{% url 'watchlist_delete' %}" method="post">
@@ -80,22 +49,175 @@
         {% endif %}
     {% endif %}
 
-    <h4>Comments</h4>
 
-    <ul class="list-group">
-        {% for comment in comments %}
-            <li class="list-group-item">
-                <div>
-                    <strong>{{ comment.commenter.username }}</strong>: {{ comment.content }}
+    {% if listing.active %}
+        <small>{{ listing.bids.count }} bid(s) so far.</small>
+        {% if listing.bid_winner == user %}
+            <small>Your bid is the current bid.</small>
+        {% endif %}
+    {% else %}
+        <small>Auction over after {{ listing.bids.count }} bid(s).</small>
+        {% if listing.winner == user %}
+            <small>You have won this auction!</small>
+            Contact: <a href="{% url 'profile' listing.seller.id %}">{{ listing.seller.username }}</a>
+        {% endif %}
+    {% endif %}
+
+    {% if listing.active and user.is_authenticated %}
+        {% if user == listing.seller %}
+            <form action="{% url 'close' listing.id %}" method="post">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="Close Auction">
+            </form>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+
+                {% for bid in listing.bids.all %}
+                
+                    <div class="col mb-3" >
+                        <div class="card">
+                            <a href="{# url 'profile' bod.bidder.id #}">
+                                <div class="card-header">{{ bid.bidder }}</div>
+                                <div class="row no-gutters">
+                                    <div class="card-body flex-container">
+                                        {% if bid.bidder.image_url %}
+                                            <div class="col-md-4">
+                                                <img src="{{ bid.bidder.image_url }}" class="card-img" alt="{{ bid.bidder }}">
+                                            </div>
+                                            <div class="col-md-8">
+                                        {% else %}
+                                            <div class="col-md-12">
+                                        {% endif %}
+                                                <p class="card-text"><strong>bid: </strong>${{ bid.amount }}/h</p>
+                                                <p class="card-title">{{ bid.pitch }}</p>
+                                                {% if bid.bidder.specialtylist.all %}
+                                                    <p class="card-text"><strong>Specialties: </strong>{{ bid.bidder.specialtylist.all|join:", " }}</p>
+                                                {% endif %}
+
+                                                <form action="{% url 'close' listing.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" class="form-control" name="bid_winner" value="{{ bid.bidder.id }}">
+                                                    <input class="btn-sm btn-primary" type="Submit" name="choose" value="Choose Tutor">
+                                                </form>
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">Next Available</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    No active bids.
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if my_bids %}
+            <h4>My Bid</h4>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+
+                {% for bid in my_bids %}
+                
+                    <div class="col mb-3" >
+                        <div class="card">
+                            <a href="{# url 'profile' bod.bidder.id #}">
+                                <div class="card-header">{{ bid.bidder }}</div>
+                                <div class="row no-gutters">
+                                    <div class="card-body flex-container">
+                                        {% if bid.bidder.image_url %}
+                                            <div class="col-md-4">
+                                                <img src="{{ bid.bidder.image_url }}" class="card-img" alt="{{ bid.bidder }}">
+                                            </div>
+                                            <div class="col-md-8">
+                                        {% else %}
+                                            <div class="col-md-12">
+                                        {% endif %}
+                                                <p class="card-text"><strong>bid: </strong>${{ bid.amount }}/h</p>
+                                                <p class="card-title">{{ bid.pitch }}</p>
+                                                {% if listing.category %}
+                                                    <p class="card-text"><strong>Specialties: </strong>{{ bid.bidder.specialtylist.all|join:", " }}</p>
+                                                {% endif %}
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">Next Available: {{ listing.created_on }}</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    No active bids.
+                {% endfor %}
+            </div>
+        {% else %}
+            <form action="{% url 'bid' listing.id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input class="form-control" type="number" placeholder="Bid Amount" name="bid">
+                    <input type="text" class="form-control" name="pitch" placeholder="How will you help this user?">
                 </div>
-                <small>{{ comment.creation_time }}</small>
-            </li>
-        {% empty %}
-            <li class="list-group-item">No comments.</li>
-        {% endfor %}
-    </ul>
+                <input class="btn btn-primary" type="Submit" value="Place Bid">
+            </form>
+        {% endif %}
+        
+    {% elif user.is_authenticated %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {% for bid in listing.bids.all %}
+                {% if bid.bidder.id is listing.bid_winner.id %}
+                    <div class="col mb-3" >
+                        <div class="card">
+                            <a href="{% url 'profile' bid.bidder.id %}">
+                                <div class="card-header">{{ bid.bidder }}</div>
+                                <div class="row no-gutters">
+                                    <div class="card-body flex-container">
+                                        {% if bid.bidder.image_url %}
+                                            <div class="col-md-4">
+                                                <img src="{{ bid.bidder.image_url }}" class="card-img" alt="{{ bid.bidder }}">
+                                            </div>
+                                            <div class="col-md-8">
+                                        {% else %}
+                                            <div class="col-md-12">
+                                        {% endif %}
+                                                <p class="card-text"><strong>bid: </strong>${{ bid.amount }}/h</p>
+                                                <p class="card-title">{{ bid.pitch }}</p>
+                                                {% if bid.bidder.specialtylist.all %}
+                                                    <p class="card-text"><strong>Specialties:</strong> {{ bid.bidder.specialtylist.all|join:", " }}</p>
+                                                {% endif %}
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">Next Available: {{ listing.created_on }}</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                No active bids.
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <br/>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and not listing.active %}
+        <h4>Reviews</h4>
+
+        <ul class="list-group">
+            {% for comment in comments %}
+                <li class="list-group-item">
+                    <div>
+                        <strong>{{ comment.commenter.username }}</strong>: {{ comment.content }}
+                    </div>
+                    <small>{{ comment.creation_time }}</small>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No reviews.</li>
+            {% endfor %}
+        </ul>
+
         <form action="{% url 'comment' listing.id %}" method="post">
             {% csrf_token %}
             <input type="text" class="form-control" name="comment" placeholder="Comment">

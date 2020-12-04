@@ -3,6 +3,11 @@
 {% block body %}
 
     <h2>Create Listing</h2>
+    <form action="{% url 'create' %}" method="post">
+        <label for="due_date">Due Date (date and time):</label>
+        <input type="datetime-local" id="due_date" name="due_date">
+        <input type="submit">
+      </form>
 
     <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
