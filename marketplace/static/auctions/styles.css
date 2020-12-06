@@ -21,7 +21,7 @@
 .container {
     justify-content: space-between;
     align-items: baseline;
-    margin: 0;
+    width: 100%;
 }
 
 .profile {
@@ -40,8 +40,8 @@
 }
 
 #profile-img {
-    max-height: 75px;
-    max-width: 75px;
+    max-height: 250px;
+    max-width: 250px;
     border-radius: 50%;
 }
 
@@ -57,4 +57,57 @@
 
 .dropdown-toggle::after {
     color: rgba(0,0,0,.5);
+}
+
+td > label {
+    margin: 0;
+}
+
+.create-listing-btn {
+    width: 100%;
+}
+
+.create-listing-btn-td {
+    vertical-align:bottom;
+}
+
+.winner {
+    background-color: gold;
+    text-align: center;
+}
+
+/* listing table */
+.listing-table {
+    min-width: 930px;
+}
+
+.category-data {
+    width:250px;
+}
+
+.title-data {
+    min-width: 200px;
+}
+
+.due_date-data {
+    width: 175px;
+}
+
+.listing-img {
+    max-height: 300px;
+    max-width: 300px;
+}
+
+.title-data {
+    text-align: center;
+}
+
+
+
+.profile-tag-view {
+    float: left;
+    border-right: 1px solid #dee2e6;
+}
+.profile-title-view, #tagline-view {
+    text-align: center;
 }

@@ -1,6 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+<div class="container">
     <h2>{{ title }}</h2>
 
     {% if profile %}
@@ -10,56 +11,57 @@
         <p><a href="{{ credentials }}">credentials</a></p>
     {% endif %}
 
-    <div class="row row-cols-1 row-cols-md-1 row-cols-lg-2">
-        {% for listing in listings %}
+        <div class="row row-cols-1 row-cols-md-1 row-cols-lg-2">
+            {% for listing in listings %}
 
-            <div class="col mb-3">
-                {% if listing.bid_winner == user %}
-                <div class="card border-success">
-                {% else %}
-                <div class="card">
-                {% endif %}
-                    <a href="{% url 'listing' listing.id %}">
-                        <div class="card-header row no-gutters">
-                            <div class="col-auto mr-auto">
-                                {% if listing.category %}
-                                    {{ listing.category }}: 
-                                {% endif %}
-                                {{ listing.title }}
-                            </div>
-                            <div class="col-auto">
-                                Due: {{ listing.due_date }}
-                            </div>
-                        </div>
-                        <div class="row no-gutters">
-                            <div class="card-body flex-container">
-                                {% if listing.image_url %}
-                                    <div class="col-md-4">
-                                        <img src="{{ listing.image_url }}" class="card-img" alt="{{ listing.title }}">
-                                    </div>
-                                    <div class="col-md-8">
-                                {% else %}
-                                    <div class="col-md-12">
-                                {% endif %}
-                                        <p class="card-text">{{ listing.seller }}'s goal: {{ listing.goal }}</p>
-                                    </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted row no-gutters">
+                <div class="col mb-3">
+                    {% if listing.bid_winner == user %}
+                    <div class="card border-success">
+                    {% else %}
+                    <div class="card">
+                    {% endif %}
+                        <a href="{% url 'listing' listing.id %}">
+                            <div class="card-header row no-gutters">
                                 <div class="col-auto mr-auto">
-                                    Estimated Time: {{ listing.tutoring_time }}
+                                    {% if listing.category %}
+                                        {{ listing.category }}: 
+                                    {% endif %}
+                                    {{ listing.title }}
                                 </div>
                                 <div class="col-auto">
-                                    Starting Bid: ${{ listing.starting_bid }}
+                                    Due: {{ listing.due_date }}
                                 </div>
-                            </small>
-                        </div>
-                    </a>
+                            </div>
+                            <div class="row no-gutters">
+                                <div class="card-body flex-container">
+                                    {% if listing.image_url %}
+                                        <div class="col-md-4">
+                                            <img src="{{ listing.image_url }}" class="card-img" alt="{{ listing.title }}">
+                                        </div>
+                                        <div class="col-md-8">
+                                    {% else %}
+                                        <div class="col-md-12">
+                                    {% endif %}
+                                            <p class="card-text">{{ listing.seller }}'s goal: {{ listing.goal }}</p>
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted row no-gutters">
+                                    <div class="col-auto mr-auto">
+                                        Estimated Time: {{ listing.tutoring_time }}
+                                    </div>
+                                    <div class="col-auto">
+                                        Starting Bid: ${{ listing.starting_bid }}
+                                    </div>
+                                </small>
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            No active listings.
-        {% endfor %}
+            {% empty %}
+                No active listings.
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

@@ -2,25 +2,62 @@
 
 {% block body %}
 
-    <h2>Create Listing</h2>
-    <form action="{% url 'create' %}" method="post">
-        <label for="due_date">Due Date (date and time):</label>
-        <input type="datetime-local" id="due_date" name="due_date">
-        <input type="submit">
-      </form>
+    <div class="container">
+        <h2>Create Listing</h2>
 
-    <form action="{% url 'create' %}" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                    <p>{{ field.help_text }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-        <input class="btn btn-primary" type="submit" value="Create Listing">
-    </form>
-
+        <!-- @Vlad, I'm actually curious about how I might insert these queries using js, django seems kind of janky, given I see I can swap info in and out with js -->
+        <!-- can't quite figure out how to center this -->
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
+            <table class="listing-table">
+                <tr>
+                    <td class="category-data">
+                        {{ form.category.label_tag }}
+                        {{ form.category }}
+                    </td>
+                    <td colspan="3" class="title-data">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                    </td>
+                    <td class="due_date-data">
+                        {{ form.due_date.label_tag }}
+                        {{ form.due_date }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        {{ form.goal.label_tag }}
+                        {{ form.goal }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" rowspan="2">
+                        {{ form.description.label_tag }}
+                        {{ form.description }}
+                    </td>
+                    <td>
+                        {{ form.image_url.label_tag }}
+                        {{ form.image_url }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form.tutoring_time.label_tag }}
+                        {{ form.tutoring_time }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        {{ form.starting_bid.label_tag }}
+                        {{ form.starting_bid }}
+                    </td>
+                    <td class="create-listing-btn-td">
+                        <input class="btn btn-primary create-listing-btn" type="submit" value="Create Listing">
+                    </td>
+                </tr>
+                
+            </table>
+        </form>
+    </div>
 {% endblock %}

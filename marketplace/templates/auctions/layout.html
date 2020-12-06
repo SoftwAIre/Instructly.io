@@ -19,20 +19,30 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse row no-gutters" id="navbarSupportedContent">
-                <!-- figure out how to illuminate toggle switch between nav-links clicked -->
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'index' %}">Listings <span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'index' %}">All Active Listings</a>
+                                {% for category in categories %}
+                                    <a class="dropdown-item" id="{{ category }}" href="{% url 'category' category.id %}">{{ category }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'categories' %}">Categories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tutors' %}">Tutors</a>
+                        <!-- figure out a way to have context with js so that you don't have to load it -->
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tutors Filter</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link" href="{% url 'tutors' %}">All Tutors</a>
+                            </div>
+                        </div>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+                            <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'create' %}">Create Listing</a>
@@ -41,18 +51,22 @@
                 </ul>
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% if user.is_authenticated %}
-                            <strong class="profile-text">{{ user.username }}  <img id="profile-nav-img" src="{{ user.image_url }}" alt="https://www.civhc.org/wp-content/uploads/2018/10/question-mark-768x768.png"></strong>
-                        {% else %}
-                            <strong class="profile-text">Profile</strong>
-                        {% endif %}
+                        <strong class="profile-text">
+                            {% if user.is_authenticated and user.image_url %}
+                                {{ user.username }}  <img id="profile-nav-img" src="{{ user.image_url }}" alt="https://www.civhc.org/wp-content/uploads/2018/10/question-mark-768x768.png">
+                            {% elif user.is_authenticated %}
+                                {{ user.username }}
+                            {% else %}
+                                Profile
+                            {% endif %}
+                        </strong>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% if not user.is_authenticated %}
                             <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
                             <a class="dropdown-item" href="{% url 'register' %}">Register</a>
                         {% else %}
-                            <a class="dropdown-item" href="{% url 'profile' user.id %}">View Profile</a>
+                            <a class="dropdown-item profile-btn" href="{% url 'profile' user.id %}">View Profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
                         {% endif %}
@@ -67,6 +81,5 @@
 
 {% block script %}
     <script src="{% static 'auctions/edit.js' %}"></script>
-    <script src="{% static 'auctions/editTagline.js' %}"></script>
     <script src="{% static 'auctions/dropdown.js' %}"></script>
 {% endblock %}

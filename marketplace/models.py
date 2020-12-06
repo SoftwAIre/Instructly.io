@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import datetime
-# from django.utils.translation import gettext as _
 
 
 class User(AbstractUser):
@@ -35,7 +34,7 @@ class Listing(models.Model):
     category = models.ForeignKey("Category", on_delete=models.SET_NULL, blank=True, null=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=25)
-    goal = models.CharField(max_length=255)
+    goal = models.CharField(max_length=80)
     description = models.TextField(blank=True)
     image_url = models.URLField(blank=True)
     seller = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sellers")
@@ -44,23 +43,11 @@ class Listing(models.Model):
     due_date = models.DateField(editable=True)
     tutoring_time = models.DecimalField(default=1, max_digits=2, decimal_places=1)
     session_completed = models.BooleanField(default=False)
+    # in the future I would like to add this field
+    # file_upload = models.FileField(upload_to='uploads/')
 
     def __str__(self):
         return self.title
-
-    # def top_bid(self):
-    #     try:
-    #         return max(self.bids.all(), key=lambda b: b.amount)
-    #     except ValueError:
-    #         return None
-
-    # def price(self):
-    #     bid = self.top_bid()
-    #     return bid.amount if bid is not None else self.starting_bid
-
-    # def winner(self):
-    #     bid = self.top_bid()
-    #     return bid.bidder if bid is not None else None
 
 
 class Bid(models.Model):

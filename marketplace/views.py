@@ -15,30 +15,43 @@ from django import forms
 from .models import Bid, Category, Comment, Listing, User
 
 
-# class CreateListingForm(ModelForm):
+class CreateListingForm(ModelForm):
+    class Meta:
+        model = Listing
+        fields = ['category', 'title', 'due_date', 'goal', 'description', 'image_url', 'starting_bid', 'tutoring_time']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'class':'form-control', 'type':'date', 'width': '10px'}),
+            "description": forms.Textarea(attrs={'rows':'4'}),
+            'tutoring_time': forms.NumberInput(attrs={'step': 0.5}),
+            'starting_bid': forms.NumberInput(attrs={'step': 0.5}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CreateListingForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs["class"] = "form-control"
+
+
+# class CreateProfile(ModelForm):
 #     class Meta:
-#         model = Listing
-#         fields = ['category', 'title', 'goal', 'description', 'due_date', 'image_url', 'starting_bid', 'tutoring_time']
-        
-#     def __init__(self, *args, **kwargs):
-#         super(CreateListingForm, self).__init__(*args, **kwargs)
-#         for visible in self.visible_fields():
-#             visible.field.widget.attrs["class"] = "form-control"
-
-
-class CreateListingForm(forms.Form):
-    category = forms.CharField(max_length=25)
-    # title = forms.CharField(max_length=25)
-    # goal = forms.CharField(max_length=255)
-    # description = forms.TextField(blank=True)
-    # image_url = forms.URLField(blank=True)
-    # seller = forms.ForeignKey("User", on_delete=forms.CASCADE, related_name="listings")
-    # starting_bid = forms.DecimalField(max_digits=19, decimal_places=2)
-    # bid_winner = forms.ForeignKey("User", on_delete = forms.CASCADE, blank=True, null=True, related_name="listing_won")
-    due_date = forms.DateField()
-    # tutoring_time = forms.DecimalField(default=1, max_digits=2, decimal_places=1)
-    # session_completed = forms.BooleanField(default=False)
-
+#         model = User
+#         fields = [
+#             'wonlist',
+#             'watchlist',
+#             'specialtylist',
+#             'tagline',
+#             'tutor_profile',
+#             'is_tutor',
+#             'is_student',
+#             'image_url',
+#             'youtube_channel',
+#             'medium_channel',
+#             'linkedin_url',
+#             'github_url'
+#         ]
+#         widgets={
+#             ''
+#         }
 
 
 @login_required
@@ -53,26 +66,14 @@ def bid(request, listing_id):
             return render(request, "auctions/error.html", {
                 "message": "Could not place bid: you cannot bid on your own items."
             })
-        # elif listing.bids.count() == 0 and amount < listing.starting_bid:
-        #     return render(request, "auctions/error.html", {
-        #         "message": "Could not place bid: bid must be at least starting bid."
-        #     })
-        # elif listing.bids.count() > 0 and amount <= listing.price():
-        #     return render(request, "auctions/error.html", {
-        #         "message": "Could not place bid: bid must be greater than current bid."
-        #     })
         bid = Bid(amount=amount, pitch=pitch, bidder=request.user, listing=listing)
         bid.save()
-    # elif request.method == "GET":
-    #     listing = get_object_or_404(Listing, pk=listing_id)
-    #     if listing.seller == request.user:
-    #         bids = Bid.objects.filter(listing=listing)
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
 
 def categories(request):
     return render(request, "auctions/categories.html", {
-        "categories": Category.objects.order_by("name").all()
+        "categories": Category.objects.order_by("name").all(),
     })
 
 
@@ -81,7 +82,8 @@ def category(request, category_id):
     listings = Listing.objects.filter(active=True, category=category).order_by("-creation_time").all()
     return render(request, "auctions/index.html", {
         "title": f"Active Listings in {category.name}: {listings.count()}",
-        "listings": listings
+        "listings": listings,
+        "categories": Category.objects.order_by("name").all()
     })
 
 
@@ -93,9 +95,10 @@ def close(request, listing_id):
             return render(request, "auctions/error.html", {
                 "message": "You can only close a listing that you own."
             })
-        winner_id = request.POST["bid_winner"]
-        winner = get_object_or_404(User, pk=int(winner_id))
-        listing.bid_winner = winner
+        if "bid_winner" in request.POST:
+            winner_id = request.POST["bid_winner"]
+            winner = get_object_or_404(User, pk=int(winner_id))
+            listing.bid_winner = winner
         listing.active = False
         listing.save()
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
@@ -121,21 +124,28 @@ def create(request):
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/create.html", {
-                "form": form
+                "form": form,
+                "categories": Category.objects.order_by("name").all()
             })
     else:
         return render(request, "auctions/create.html", {
-            "form": CreateListingForm()
+            "form": CreateListingForm(),
+            "categories": Category.objects.order_by("name").all(),
         })
 
 
-def index(request):
-    listings = Listing.objects.filter(active=True).order_by("due_date").all()
+def index(request, filter_category=None):
+    if (filter_category):
+        listings = Listing.objects.filter(active=True, category=filter_category).order_by("due_date").all()
+    else: 
+        listings = Listing.objects.filter(active=True).order_by("due_date").all()
+
     listings_count = listings.count()
     return render(request, "auctions/index.html", {
-        "title": f"Active Listings Available: {listings_count}",
+        "title": f"All Active Listings: {listings_count}",
         "listing_counts": listings_count,
-        "listings": listings
+        "listings": listings,
+        "categories": Category.objects.order_by("name").all()
     })
 
 
@@ -150,7 +160,9 @@ def listing(request, listing_id):
         "comments": listing.comments.order_by("-creation_time").all(),
         "listing": listing,
         "my_bids": my_bids,
-        "on_watchlist": on_watchlist
+        "on_watchlist": on_watchlist,
+        "categories": Category.objects.order_by("name").all()
+
     })
 
 
@@ -185,9 +197,12 @@ def profile(request, user_id):
         "is_me": request.user.id == user_id,
         "title": f"{profile_user.username}'s Profile",
         "profile_user": profile_user,
+        # change this so that it's just profile, not tutor_profile
         "profile": profile_user.tutor_profile,
         "credentials": profile_user.linkedin_url,
-        "listings": won_listings
+        "listings": won_listings,
+        "categories": Category.objects.order_by("name").all()
+
     })
 
 
@@ -231,7 +246,10 @@ def edit_profile(request, user_id):
 def tutors(request):
     tutors = User.objects.filter(is_tutor=True)
     return render(request, "auctions/tutors.html", {
-        "tutors": tutors
+        "title": "All Tutors",
+        "tutors": tutors,
+        "categories": Category.objects.order_by("name").all()
+
     })
 
 
@@ -254,7 +272,8 @@ def register(request):
             user.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                "categories": Category.objects.order_by("name").all()
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
@@ -266,8 +285,10 @@ def register(request):
 def watchlist(request):
     listings = request.user.watchlist.order_by("-creation_time").all()
     return render(request, "auctions/index.html", {
-        "title": "Watchlist",
-        "listings": listings
+        "title": "My Watchlist",
+        "listings": listings,
+        "categories": Category.objects.order_by("name").all()
+
     })
 
 
@@ -276,7 +297,9 @@ def listings_won(request):
     listings = Listing.objects.filter(bid_winner=request.user).order_by('due_date').all()
     return render(request, "auctions/index.html", {
         "title": "Listings Won",
-        "listings": listings
+        "listings": listings,
+        "categories": Category.objects.order_by("name").all()
+
     })
 
 
