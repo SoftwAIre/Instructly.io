@@ -2,9 +2,10 @@
 
 {% block body %}
 
-  <div class="container">
+  <!-- <div class="container"> -->
 
     <div class="profile-tag-view">
+      
       <div class="profile-title-view">
         <h3>{{ title }}</h3>
         {% if profile_user.image_url %}
@@ -40,7 +41,7 @@
     {% if credentials %}
         <p>Here are some of my credentials: <a href="{{ credentials }}">credentials</a></p>
     {% endif %}
-  </div>
+  <!-- </div> -->
 
   <br>
 
@@ -85,9 +86,7 @@
         </div>
       {% endif %}
     </div>
-    <div class="tab-pane fade show" id="home" role="tabpanel" aria-labelledby="home-tab">
-      home
-    </div>
+    <div class="tab-pane fade show" id="home" role="tabpanel" aria-labelledby="home-tab">home</div>
 
     <div class="tab-pane fade" id="sessions" role="tabpanel" aria-labelledby="sessions-tab">
       <h3>Listings {{ profile_user }} won</h3>

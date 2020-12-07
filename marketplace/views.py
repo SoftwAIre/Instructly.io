@@ -1,17 +1,16 @@
 import json
 import decimal
 
+from django import forms
+from django.urls import reverse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, Http404
+from django.forms import ModelForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.db import IntegrityError
-from django.forms import ModelForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django import forms
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Bid, Category, Comment, Listing, User
 
 
@@ -52,6 +51,20 @@ class CreateListingForm(ModelForm):
 #         widgets={
 #             ''
 #         }
+
+
+def paginate_helper(request, list_of_posts):
+    """this function declutters the pagination request"""
+    # there's probably a better way to do this.
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(list_of_posts, 3)
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
 
 
 @login_required
@@ -134,17 +147,19 @@ def create(request):
         })
 
 
+# haven't included functionality for filtering category yet
 def index(request, filter_category=None):
     if (filter_category):
         listings = Listing.objects.filter(active=True, category=filter_category).order_by("due_date").all()
     else: 
         listings = Listing.objects.filter(active=True).order_by("due_date").all()
 
+    
     listings_count = listings.count()
     return render(request, "auctions/index.html", {
         "title": f"All Active Listings: {listings_count}",
         "listing_counts": listings_count,
-        "listings": listings,
+        "listings": paginate_helper(request, listings),
         "categories": Category.objects.order_by("name").all()
     })
 
@@ -162,7 +177,6 @@ def listing(request, listing_id):
         "my_bids": my_bids,
         "on_watchlist": on_watchlist,
         "categories": Category.objects.order_by("name").all()
-
     })
 
 
@@ -200,6 +214,7 @@ def profile(request, user_id):
         # change this so that it's just profile, not tutor_profile
         "profile": profile_user.tutor_profile,
         "credentials": profile_user.linkedin_url,
+        # did not to paginate here because it's only on one page
         "listings": won_listings,
         "categories": Category.objects.order_by("name").all()
 
@@ -247,9 +262,8 @@ def tutors(request):
     tutors = User.objects.filter(is_tutor=True)
     return render(request, "auctions/tutors.html", {
         "title": "All Tutors",
-        "tutors": tutors,
+        "tutors": paginate_helper(request, tutors),
         "categories": Category.objects.order_by("name").all()
-
     })
 
 
@@ -265,7 +279,6 @@ def register(request):
             return render(request, "auctions/register.html", {
                 "message": "Passwords must match."
             })
-
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
@@ -284,11 +297,11 @@ def register(request):
 @login_required
 def watchlist(request):
     listings = request.user.watchlist.order_by("-creation_time").all()
+
     return render(request, "auctions/index.html", {
         "title": "My Watchlist",
-        "listings": listings,
+        "listings": paginate_helper(request, listings),
         "categories": Category.objects.order_by("name").all()
-
     })
 
 
@@ -297,9 +310,8 @@ def listings_won(request):
     listings = Listing.objects.filter(bid_winner=request.user).order_by('due_date').all()
     return render(request, "auctions/index.html", {
         "title": "Listings Won",
-        "listings": listings,
+        "listings": paginate_helper(request, listings),
         "categories": Category.objects.order_by("name").all()
-
     })
 
 

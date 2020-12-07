@@ -41,6 +41,29 @@
         No active tutors.
       {% endfor %}
     </div>
+    
+    <!-- pagination functionality -->
+    {% if tutors.has_other_pages %}
+      <ul class="pagination">
+        {% if tutors.has_previous %}
+          <li><a href="?page={{ tutors.previous_page_number }}">prev</a></li>
+        {% else %}
+          <li class="disabled"><span>prev</span></li>
+        {% endif %}
+        {% for i in tutors.paginator.page_range %}
+          {% if tutors.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if tutors.has_next %}
+          <li><a href="?page={{ tutors.next_page_number }}">next</a></li>
+        {% else %}
+          <li class="disabled"><span>next</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
   </div>
 
 {% endblock %}

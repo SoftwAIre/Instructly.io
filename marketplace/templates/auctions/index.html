@@ -11,6 +11,7 @@
         <p><a href="{{ credentials }}">credentials</a></p>
     {% endif %}
 
+    
         <div class="row row-cols-1 row-cols-md-1 row-cols-lg-2">
             {% for listing in listings %}
 
@@ -63,5 +64,28 @@
                 No active listings.
             {% endfor %}
         </div>
+
+        <!-- pagination functionality -->
+        {% if listings.has_other_pages %}
+            <ul class="pagination">
+                {% if listings.has_previous %}
+                    <li><a href="?page={{ listings.previous_page_number }}">prev</a></li>
+                {% else %}
+                    <li class="disabled"><span>prev</span></li>
+                {% endif %}
+                {% for i in listings.paginator.page_range %}
+                    {% if listings.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if listings.has_next %}
+                    <li><a href="?page={{ listings.next_page_number }}">next</a></li>
+                {% else %}
+                    <li class="disabled"><span>next</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}
