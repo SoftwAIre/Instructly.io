@@ -6,19 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // listen for the single instance where profile-view is on the page, then
   // listen for specific buttons to be pressed
   const profileViewExistsOnThisPage = document.getElementById("profile-view");
-  if(profileViewExistsOnThisPage){
+  if (profileViewExistsOnThisPage){
     editProfile();
     loadProfile();
   
     editTagline();
     loadTagline();
   }
-
-
-  // listen for category dropdown to be pressed
-  // normally I might use context to keep the categories 
-  // so that I wouldn't have to reload them every time I 
-  // check the categories button
 
 });
 
@@ -141,10 +135,10 @@ function putEditProfileFetch(userId, updatedProfile) {
   })
   .then(response => response.json())
   .then(data => {
-    document.querySelector("#profile-content").innerHTML = data['profile'];
+    document.querySelector("#profile-content").innerHTML = data.profile;
     loadProfile();
   })
-  .catch()
+  .catch();
 }
 
 function putEditTaglineFetch(userId, updatedTagline) {
@@ -161,8 +155,8 @@ function putEditTaglineFetch(userId, updatedTagline) {
   })
   .then(response => response.json())
   .then(data => {
-    document.querySelector("#tagline-content").innerHTML = data['tagline'];
+    document.querySelector("#tagline-content").innerHTML = data.tagline;
     loadTagline();
   })
-  .catch()
+  .catch();
 }

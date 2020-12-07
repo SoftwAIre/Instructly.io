@@ -27,6 +27,9 @@ YouTutor has five educating streamers interested in posting their videos on the 
 - On profile page you are able to write more than what is alotted in the models and have it be saved because of the way the form was coded. In retrospect, I should have created a new ModelForm in views to take in specific elements for some forms so that you wouldn't be able to enter more info in to these text areas than alotted in the models. 
 
 # ToDo: Outside of scope of project due date
+### tabs on profile
+- Not yet responsive. 
+
 ### Direct Messaging
 - DNE yet. 
 
@@ -41,7 +44,6 @@ YouTutor has five educating streamers interested in posting their videos on the 
 
 ### Student looking for x level of expertise. 
 - As a student, sometimes I just want to talk to someone that has a little bit of knowledge about the subject so that we can both try to understand it together. OTher times I want a real pro. 
-
 
 ### referrals / @tutor notification
 - DNE yet.

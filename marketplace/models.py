@@ -8,6 +8,7 @@ class User(AbstractUser):
     wonlist = models.ManyToManyField("Listing", related_name="winners", blank=True)
     specialtylist = models.ManyToManyField("Category", related_name="specialists", blank=True)
     tagline = models.CharField(blank=True, max_length=80)
+    # should have just called this profile, not tutor_profile
     tutor_profile = models.TextField(blank=True, max_length=300)
     is_tutor = models.BooleanField(default=False)
     is_student = models.BooleanField(default=True)
