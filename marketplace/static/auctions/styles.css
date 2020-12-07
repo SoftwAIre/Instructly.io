@@ -128,3 +128,11 @@ body {
 .pagination {
     justify-content: center;
 }
+
+@media screen and (max-width: 1000px) {
+    #myTab {
+       width: 20px;
+       /* overflow: hidden; */
+       /* margin: 0 -150px 0 -150px; */
+    }
+ }
