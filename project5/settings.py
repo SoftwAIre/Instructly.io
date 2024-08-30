@@ -26,7 +26,7 @@ SECRET_KEY = '0dacmgrl700bvmep1h&#=@z=h*$wjuwo^#8injm%o*gd_-a8t!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["3.128.160.87"]
+ALLOWED_HOSTS = ['instructly.io','www.instructly.io',"3.128.160.87"]
 
 
 AUTH_USER_MODEL = 'marketplace.User'
