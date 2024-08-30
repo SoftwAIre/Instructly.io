@@ -15,7 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'home/ec2-user/YouTutor/staticfiles/')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -26,7 +27,7 @@ SECRET_KEY = '0dacmgrl700bvmep1h&#=@z=h*$wjuwo^#8injm%o*gd_-a8t!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['instructly.io','www.instructly.io',"3.128.160.87"]
+ALLOWED_HOSTS = ['instructly.io','www.instructly.io',"3.128.160.87","127.0.0.1"]
 
 
 AUTH_USER_MODEL = 'marketplace.User'
