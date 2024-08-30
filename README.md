@@ -1,18 +1,18 @@
-# YouTutor
-Welcome to YouTutor! YouTutor is a video playlist and tutoring platform.
+# instructly.io
+Welcome to instructly.io! instructly.io is a video playlist and tutoring platform.
 
 Right now, YouTube hosts video solutions to programming problems but little opportunity to interact directly with content creators. Tutoring platforms, like Wyzant, do show you reviews for tutors but not how their teaching style or demonstrating their knowledge in a subject.
 
-YouTutor believes there is a significant number of people on YouTube that want to interact directly with content consumers for a negotiated price and Wyzant tutors want to create YouTube tutorials that will drive advertisement to themselves. 
+instructly.io believes there is a significant number of people on YouTube that want to interact directly with content consumers for a negotiated price and Wyzant tutors want to create YouTube tutorials that will drive advertisement to themselves. 
 
-YouTutor is that marketplace. 
+instructly.io is that marketplace. 
 
 With margins on YouTube being $0.001 per view and margins on Wyzant being 25% of a tutor's negotiated hourly rate, there is an opportunity to serve the market that exists between these two platforms and offer missing elements of each platform. 
 
 From a student perspective, I want to be able to post what I'm looking for, be referred to videos that will answer my question or speak to someone that is demonstrably knowledgeable about the sought area.
 
 ## Next Steps
-YouTutor has five educating streamers interested in posting their videos on the YouTutor platform.
+instructly.io has five educating streamers interested in posting their videos on the instructly.io platform.
 
 # ToDo: Missing for current project due date
 
@@ -52,9 +52,9 @@ YouTutor has five educating streamers interested in posting their videos on the 
 - Student pays at the before session starts and on setting up date for tutor session, during which, payments are held in escrow until completing the session.
 - Student payment method to be connected to a real account. 
 
-### YouTutor background check status
+### instructly.io background check status
 - If tutor, background check optional
 
-### YouTutor Testing
+### instructly.io Testing
 - "What level of specialist are you?"
 - Aggregating reviews
